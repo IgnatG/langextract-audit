@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.2 (2026-02-21)
+
+### Bug Fixes
+
+- Add batch_total_ms to AuditRecord and update related logic in AuditLanguageModel
+  ([`6301798`](https://github.com/IgnatG/langextract-audit/commit/6301798ced09bfa028863da8845304f81d534212))
+
+
 ## v1.1.1 (2026-02-21)
 
 ### Bug Fixes
