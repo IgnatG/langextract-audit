@@ -131,7 +131,8 @@ class AuditLanguageModel(BaseLanguageModel):
         Parameters:
             prompt: The raw prompt text.
             outputs: The scored outputs from the inference call.
-            latency_ms: Per-prompt latency (or batch avg) in ms.
+            latency_ms: Per-prompt latency in sync mode, or batch
+                average (``batch_total_ms / batch_size``) in async.
             batch_index: Index of this prompt in the batch.
             batch_size: Total prompts in the batch.
             success: Whether the inference completed without error.
@@ -237,6 +238,34 @@ class AuditLanguageModel(BaseLanguageModel):
                     batch_size=batch_size,
                     success=True,
                 )
+            except StopIteration:
+                # Inner provider returned fewer results than
+                # prompts — emit failure records for remaining
+                # prompts and stop the generator.
+                latency_ms = (time.perf_counter() - t0) * 1000
+                error_msg = (
+                    "Inner provider returned fewer results "
+                    "than batch size"
+                )
+                for remaining_idx in range(idx, batch_size):
+                    remaining_prompt = batch_prompts[remaining_idx]
+                    record = self._build_record(
+                        prompt=remaining_prompt,
+                        outputs=[],
+                        latency_ms=latency_ms if remaining_idx == idx else 0.0,
+                        batch_index=remaining_idx,
+                        batch_size=batch_size,
+                        success=False,
+                        error=error_msg,
+                    )
+                    self._emit(record)
+                logger.warning(
+                    "Inner provider exhausted after %d of %d "
+                    "prompts",
+                    idx,
+                    batch_size,
+                )
+                return
             except Exception as exc:
                 latency_ms = (time.perf_counter() - t0) * 1000
                 outputs_list = [ScoredOutput(score=0.0, output="")]

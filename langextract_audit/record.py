@@ -16,8 +16,9 @@ class AuditRecord:
         model_id: The model identifier used for the inference.
         prompt_hash: SHA-256 hex digest of the prompt text.
         response_hash: SHA-256 hex digest of the response text.
-        latency_ms: Average wall-clock time per prompt in the
-            batch, in milliseconds.
+        latency_ms: Wall-clock time in milliseconds.  In sync mode
+            this is the actual per-prompt latency; in async mode it
+            is the batch average (``batch_total_ms / batch_size``).
         timestamp: UTC timestamp of the inference call.
         success: Whether the inference completed without error.
         score: The score from the ``ScoredOutput``.

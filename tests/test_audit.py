@@ -381,6 +381,40 @@ class TestAuditProviderSync:
         assert len(audit.sinks) == 1
         assert isinstance(audit.sinks[0], LoggingSink)
 
+    def test_inner_exhausted_early_emits_failures(self) -> None:
+        """When the inner provider returns fewer results than prompts,
+        failure records must be emitted for the remaining prompts and
+        the generator stops cleanly without raising."""
+
+        class _ShortProvider(BaseLanguageModel):
+            """Returns only one result regardless of batch size."""
+
+            def infer(self, batch_prompts, **kw):
+                yield [ScoredOutput(score=1.0, output="only one")]
+                # StopIteration on second next()
+
+            async def async_infer(self, batch_prompts, **kw):
+                return [[ScoredOutput(score=1.0, output="only one")]]
+
+        capture = _CaptureSink()
+        audit = AuditLanguageModel(
+            model_id="audit/test",
+            inner=_ShortProvider(),
+            sinks=[capture],
+        )
+        results = list(audit.infer(["p1", "p2", "p3"]))
+        # Only the first prompt should yield a result
+        assert len(results) == 1
+        assert results[0][0].output == "only one"
+        # All 3 prompts should have records: 1 success + 2 failures
+        assert len(capture.records) == 3
+        assert capture.records[0].success is True
+        assert capture.records[1].success is False
+        assert capture.records[2].success is False
+        assert "fewer results" in (capture.records[1].error or "")
+        assert capture.records[1].batch_index == 1
+        assert capture.records[2].batch_index == 2
+
 
 # ---------------------------------------------------------------------------
 # Provider tests — async
