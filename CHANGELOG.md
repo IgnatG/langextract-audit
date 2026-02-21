@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.4 (2026-02-21)
+
+### Bug Fixes
+
+- Enhance latency_ms documentation and handle early exhaustion in AuditLanguageModel
+  ([`422938e`](https://github.com/IgnatG/langextract-audit/commit/422938e402ad5f65361e93c414998b8b646ac51d))
+
+
 ## v1.1.3 (2026-02-21)
 
 ### Bug Fixes
