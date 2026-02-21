@@ -247,10 +247,10 @@ class TestAuditProviderSync:
         assert capture.records[0].score == 0.0
 
     def test_record_captures_token_usage(self) -> None:
+        """Token usage is captured when ScoredOutput supports it."""
         usage = {"prompt_tokens": 10, "completion_tokens": 5}
-        stub = _StubProvider(
-            responses=[[ScoredOutput(score=1.0, output="ok", usage=usage)]]
-        )
+        so = ScoredOutput(score=1.0, output="ok", usage=usage)
+        stub = _StubProvider(responses=[[so]])
         capture = _CaptureSink()
         audit = AuditLanguageModel(
             model_id="audit/test",
