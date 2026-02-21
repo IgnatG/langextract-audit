@@ -11,12 +11,12 @@ import logging
 import time
 from typing import TYPE_CHECKING, Any
 
-from langextract_audit.record import AuditRecord
-from langextract_audit.sinks import AuditSink, LoggingSink
-
 import langextract as lx
 from langextract.core.base_model import BaseLanguageModel
 from langextract.core.types import ScoredOutput
+
+from langextract_audit.record import AuditRecord
+from langextract_audit.sinks import AuditSink, LoggingSink
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
