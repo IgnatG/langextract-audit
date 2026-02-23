@@ -1,8 +1,8 @@
-# LangExtract Audit Provider
+# LangCore Audit Provider
 
-A provider plugin for [LangExtract](https://github.com/google/langextract) that wraps any `BaseLanguageModel` with structured audit logging. Pure decorator pattern — zero impact on inference results.
+A provider plugin for [LangCore](https://github.com/google/langcore) that wraps any `BaseLanguageModel` with structured audit logging. Pure decorator pattern — zero impact on inference results.
 
-> **Note**: This is a third-party provider plugin for LangExtract. For the main LangExtract library, visit [google/langextract](https://github.com/google/langextract).
+> **Note**: This is a third-party provider plugin for LangCore. For the main LangCore library, visit [google/langcore](https://github.com/google/langcore).
 
 ## Installation
 
@@ -10,7 +10,7 @@ Install from source:
 
 ```bash
 git clone <repo-url>
-cd langextract-audit
+cd langcore-audit
 pip install -e .
 ```
 
@@ -41,8 +41,8 @@ pip install -e ".[otel]"
 ### Basic Usage with Logging Sink
 
 ```python
-import langextract as lx
-from langextract_audit import AuditLanguageModel, LoggingSink
+import langcore as lx
+from langcore_audit import AuditLanguageModel, LoggingSink
 
 # Create the inner provider (any BaseLanguageModel)
 inner_config = lx.factory.ModelConfig(
@@ -69,7 +69,7 @@ result = lx.extract(
 ### JSON File Audit Trail
 
 ```python
-from langextract_audit import AuditLanguageModel, JsonFileSink
+from langcore_audit import AuditLanguageModel, JsonFileSink
 
 audit_model = AuditLanguageModel(
     model_id="audit/gpt-4o",
@@ -101,8 +101,8 @@ Each line in the output file is a JSON object:
 ### OpenTelemetry Integration
 
 ```python
-from langextract_audit import AuditLanguageModel
-from langextract_audit.sinks import OtelSpanSink
+from langcore_audit import AuditLanguageModel
+from langcore_audit.sinks import OtelSpanSink
 
 audit_model = AuditLanguageModel(
     model_id="audit/gpt-4o",
@@ -114,7 +114,7 @@ audit_model = AuditLanguageModel(
 ### Multiple Sinks
 
 ```python
-from langextract_audit import (
+from langcore_audit import (
     AuditLanguageModel,
     JsonFileSink,
     LoggingSink,
@@ -169,8 +169,8 @@ results = await audit_model.async_infer(["prompt1", "prompt2"])
 Implement the `AuditSink` interface:
 
 ```python
-from langextract_audit.sinks import AuditSink
-from langextract_audit.record import AuditRecord
+from langcore_audit.sinks import AuditSink
+from langcore_audit.record import AuditRecord
 
 class MyCustomSink(AuditSink):
     def emit(self, record: AuditRecord) -> None:

@@ -9,12 +9,12 @@ from typing import TYPE_CHECKING
 from unittest import mock
 
 import pytest
-from langextract.core.base_model import BaseLanguageModel
-from langextract.core.types import ScoredOutput
+from langcore.core.base_model import BaseLanguageModel
+from langcore.core.types import ScoredOutput
 
-from langextract_audit import AuditLanguageModel
-from langextract_audit.record import AuditRecord
-from langextract_audit.sinks import AuditSink, JsonFileSink, LoggingSink
+from langcore_audit import AuditLanguageModel
+from langcore_audit.record import AuditRecord
+from langcore_audit.sinks import AuditSink, JsonFileSink, LoggingSink
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
@@ -514,8 +514,8 @@ class TestPluginRegistration:
     """Tests for entry-point discovery."""
 
     def test_audit_prefix_resolves(self) -> None:
-        import langextract as lx
-        from langextract.providers import registry
+        import langcore as lx
+        from langcore.providers import registry
 
         lx.providers.load_plugins_once()
         cls = registry.resolve("audit/my-model")
