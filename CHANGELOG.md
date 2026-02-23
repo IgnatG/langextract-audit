@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.5 (2026-02-23)
+
+### Bug Fixes
+
+- Updated the folder structure
+  ([`715d467`](https://github.com/IgnatG/langcore-audit/commit/715d4676cac1d504185acda42cbb1e2fe016e813))
+
+
 ## v1.1.4 (2026-02-21)
 
 ### Bug Fixes
